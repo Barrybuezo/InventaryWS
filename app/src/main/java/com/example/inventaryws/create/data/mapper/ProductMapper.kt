@@ -1,15 +1,12 @@
 package com.example.inventaryws.create.data.mapper
 
-import com.example.inventaryws.core.domain.model.Product
 import com.example.inventaryws.core.firebase.dto.ProductDto
-import com.google.firebase.firestore.ServerTimestamp
-import java.util.Date
-import kotlin.String
+import com.example.inventaryws.create.domain.model.CreateProduct
 
-fun Product.toDto() = ProductDto(
+fun CreateProduct.toDto() = ProductDto(
     name = name,
     category = category,
-    amount = amount,
+    amount = amount.toDouble(),
     stock = stock,
     minimumStock = minimumStock,
     urlImg = urlImg

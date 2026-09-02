@@ -1,8 +1,8 @@
 package com.example.inventaryws.create.domain.repository
 
-import com.example.inventaryws.core.domain.model.Product
+import com.example.inventaryws.create.domain.model.CreateProduct
 
 interface CreateRepository {
-    suspend fun createProduct(product: Product): Result<Unit>
+    suspend fun createProduct(product: CreateProduct): Result<Unit>
 
 }
