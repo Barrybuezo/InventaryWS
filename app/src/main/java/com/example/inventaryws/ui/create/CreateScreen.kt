@@ -14,11 +14,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -33,15 +38,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.example.inventaryws.R
 import com.example.inventaryws.core.composables.IWSButtom
 import com.example.inventaryws.core.composables.IWSButtomWithIcon
 import com.example.inventaryws.core.composables.InventaryWSText
+import com.example.inventaryws.core.domain.model.CreateProductCategory
+import com.example.inventaryws.core.util.image
 import com.example.inventaryws.create.data.utils.createImageCaptureUri
 import com.example.inventaryws.ui.composables.InventaryStockOutlinedTextField
 import com.example.inventaryws.ui.composables.InventaryWSTopAppBar
@@ -108,6 +113,8 @@ fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
                 onNameChanged = viewModel::onNameChanged,
                 description = uiState.description,
                 onDescriptionChanged = viewModel::onDescriptionChanged,
+                category = uiState.category,
+                onCategoryChanged = viewModel::onCategory,
                 amount = uiState.amount,
                 onAmountChanged = viewModel::onAmountChanged,
                 stock = uiState.stock,
@@ -148,6 +155,8 @@ fun CreateScreenContent(
     onNameChanged: (String) -> Unit,
     description: String,
     onDescriptionChanged: (String) -> Unit,
+    category: CreateProductCategory,
+    onCategoryChanged: (CreateProductCategory) -> Unit,
     amount: String,
     onAmountChanged: (String) -> Unit,
     stock: String,
@@ -182,6 +191,15 @@ fun CreateScreenContent(
             onValueChange = onDescriptionChanged,
             label = "Descripción",
             placeholder = "Ingresar descripción",
+            singleLine = false,
+            minLines = 2,
+            maxLines = 2,
+            modifier = modifier.fillMaxWidth()
+        )
+
+        CategoryDropDown(
+            selectedCategory = category,
+            onCategorySelected = onCategoryChanged,
             modifier = modifier.fillMaxWidth()
         )
 
@@ -202,29 +220,17 @@ fun CreateScreenContent(
             modifier = Modifier.fillMaxWidth()
         )
 
-
-        ImageContentSelector(
+        ProductImageSection(
+            imageUri = imageUri,
             onCameraClicked = onCameraClicked,
             onGalleryClicked = onGalleryClicked,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        AsyncImage(
-            model = imageUri, //String de la Uri que Coil convierte
-            contentDescription = "Foto del producto",
-            contentScale = ContentScale.Crop,
-            error = painterResource(R.drawable.ic_launcher_background),
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .clip(shape = MaterialTheme.shapes.medium)
-                .background(color = Color.Gray.copy(alpha = 0.3f))
+            modifier = Modifier.weight(1f)
         )
 
         //Boton para guardar
         IWSButtom(
             value = "Guardar",
-            onClick = onCameraClicked,
+            onClick = onSaveCliked,
             containerColor = Color(0xFF3BA558),
             contentColor = Color.White,
             modifier = Modifier.fillMaxWidth(),
@@ -298,4 +304,101 @@ fun StockConten(
         )
     }
 
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryDropDown(
+    selectedCategory: CreateProductCategory,
+    onCategorySelected: (CreateProductCategory) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+    ) {
+        InventaryStockOutlinedTextField(
+            value = selectedCategory.label,
+            onValueChange = {},
+            readOnly = true,
+            label = "Categoría",
+            placeholder = "Selecciona una categoría",
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            CreateProductCategory.entries.forEach { category ->
+                DropdownMenuItem(
+                    text = { InventaryWSText(value = category.label) },
+                    onClick = {
+                        onCategorySelected(category)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun ProductImageSection(
+    imageUri: Uri,
+    onCameraClicked: () -> Unit,
+    onGalleryClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        InventaryWSText(
+            value = "Imagen del producto",
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Botones de cámara y galería
+        ImageContentSelector(
+            onCameraClicked = onCameraClicked,
+            onGalleryClicked = onGalleryClicked,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        if (imageUri == Uri.EMPTY) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(Color.Gray.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = image,
+                    contentDescription = null,
+                    tint = Color.Gray,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        } else {
+            AsyncImage(
+                model = imageUri,
+                contentDescription = "Foto del producto",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clip(MaterialTheme.shapes.medium)
+            )
+        }
+    }
 }

@@ -1,7 +1,5 @@
 package com.example.inventaryws.core.domain.model
 
-import java.util.Date
-
 data class Product(
     val documentId : String,
     val name: String,

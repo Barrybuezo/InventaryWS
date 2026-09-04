@@ -12,18 +12,26 @@ fun InventaryStockOutlinedTextField(
     placeholder: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
 ) {
     OutlinedTextField(
         modifier = modifier,
         value = value,
         onValueChange = onValueChange,
+        readOnly = readOnly,
+        trailingIcon = trailingIcon,
         singleLine = singleLine,
         label = {
             InventaryWSText(value = label)
         },
         placeholder = {
             InventaryWSText(value = placeholder)
-        }
+        },
+        maxLines = maxLines,
+        minLines = minLines
     )
 }

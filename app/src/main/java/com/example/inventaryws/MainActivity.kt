@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.inventaryws.core.ui.theme.InventaryWSTheme
 import com.example.inventaryws.ui.create.CreateScreen
-import com.example.inventaryws.ui.inventory.InventoryScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

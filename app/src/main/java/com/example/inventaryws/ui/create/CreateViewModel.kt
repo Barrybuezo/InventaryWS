@@ -3,6 +3,7 @@ package com.example.inventaryws.ui.create
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.inventaryws.core.domain.model.CreateProductCategory
 import com.example.inventaryws.create.domain.model.CreateProduct
 import com.example.inventaryws.create.domain.usecase.CreateDocumentUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +16,7 @@ data class CreateUiState(
     val isLoading: Boolean = false,
     val name: String = "",
     val description : String = "",
+    val category: CreateProductCategory = CreateProductCategory.DEFAULT,
     val amount : String = "",
     val stock : String = "",
     val minimumStock: String = "",
@@ -40,6 +42,10 @@ class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) 
         _uiState.update { product -> product.copy(description = value) }
     }
 
+    fun onCategory(value: CreateProductCategory){
+        _uiState.update { it.copy(category = value) }
+    }
+
     fun onAmountChanged(value: String){
         _uiState.update { product -> product.copy(amount = value) }
     }
@@ -61,14 +67,15 @@ class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) 
 
         //validaciones
 
+        val form = _uiState.value
         val newProduct = CreateProduct(
-            name = _uiState.value.name,
-            category = "Test",
-            description = _uiState.value.description,
-            amount = _uiState.value.amount,
-            stock = _uiState.value.stock.toInt(),
-            minimumStock = _uiState.value.minimumStock.toInt(),
-            imageUri = _uiState.value.localUri
+            name = form.name,
+            category = form.category.label,
+            description = form.description,
+            amount = form.amount,
+            stock = form.stock.toInt(),
+            minimumStock = form.minimumStock.toInt(),
+            imageUri = form.localUri
         )
 
         viewModelScope.launch {
