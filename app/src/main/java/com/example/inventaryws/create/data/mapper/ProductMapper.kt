@@ -9,5 +9,5 @@ fun CreateProduct.toDto() = ProductDto(
     amount = amount.toDouble(),
     stock = stock,
     minimumStock = minimumStock,
-    urlImg = urlImg
+    urlImg = null
 )

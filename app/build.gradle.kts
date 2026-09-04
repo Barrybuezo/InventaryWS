@@ -67,6 +67,14 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    //supabase
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4"))
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+
+    //ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
+
     //testing
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

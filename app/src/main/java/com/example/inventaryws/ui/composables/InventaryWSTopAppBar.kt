@@ -8,6 +8,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.inventaryws.core.composables.InventaryWSText
 
 
@@ -15,12 +18,11 @@ import com.example.inventaryws.core.composables.InventaryWSText
 @Composable
 fun InventaryWSTopAppBar(
     title: String,
-    modifier: Modifier = Modifier,
     onBackPressed: () -> Unit
 ) {
     TopAppBar(
         title = {
-            InventaryWSText(value = title)
+            InventaryWSText(value = title, fontSize = 30.sp, fontWeight = FontWeight.Bold)
         },
         navigationIcon = {
             IconButton(onClick = onBackPressed) {

@@ -1,17 +1,22 @@
-package com.example.inventaryws.ui
+package com.example.inventaryws.ui.create
 
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.inventaryws.R
+import com.example.inventaryws.core.composables.IWSButtom
+import com.example.inventaryws.core.composables.IWSButtomWithIcon
 import com.example.inventaryws.core.composables.InventaryWSText
 import com.example.inventaryws.create.data.utils.createImageCaptureUri
 import com.example.inventaryws.ui.composables.InventaryStockOutlinedTextField
@@ -62,8 +69,8 @@ fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
     //Vamara
     val cameraLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
-    ){ success ->
-        if(success){
+    ) { success ->
+        if (success) {
             pendingCameraUri?.let { viewModel.onImageSelected(it) }
         }
 
@@ -105,7 +112,7 @@ fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
                 onAmountChanged = viewModel::onAmountChanged,
                 stock = uiState.stock,
                 onStockChanged = viewModel::onStockChanged,
-                minimumStock = uiState.stock,
+                minimumStock = uiState.minimumStock,
                 onMinimumStockChanged = viewModel::onMinimumStockChanged,
                 imageUri = uiState.localUri,
                 onSaveCliked = viewModel::saveProduct,
@@ -152,7 +159,7 @@ fun CreateScreenContent(
     onGalleryClicked: () -> Unit,
     onSaveCliked: () -> Unit,
     modifier: Modifier = Modifier
-    ) {
+) {
 
 
     Column(
@@ -187,22 +194,19 @@ fun CreateScreenContent(
             modifier = modifier.fillMaxWidth()
         )
 
-        //existencia
-        InventaryStockOutlinedTextField(
-            value = stock,
-            onValueChange = onStockChanged,
-            label = "Stock",
-            placeholder = "0",
-            modifier = modifier.fillMaxWidth()
+        StockConten(
+            stock = stock,
+            onStockChanged = onStockChanged,
+            minimumStock = minimumStock,
+            onMinimumStockChanged = onMinimumStockChanged,
+            modifier = Modifier.fillMaxWidth()
         )
 
-        //existencia minima
-        InventaryStockOutlinedTextField(
-            value = minimumStock,
-            onValueChange = onMinimumStockChanged,
-            label = "Stock minimo",
-            placeholder = "0",
-            modifier = modifier.fillMaxWidth()
+
+        ImageContentSelector(
+            onCameraClicked = onCameraClicked,
+            onGalleryClicked = onGalleryClicked,
+            modifier = Modifier.fillMaxWidth()
         )
 
         AsyncImage(
@@ -217,20 +221,81 @@ fun CreateScreenContent(
                 .background(color = Color.Gray.copy(alpha = 0.3f))
         )
 
-
-        //Boton camara
-        Button(onClick = onCameraClicked, Modifier.fillMaxWidth()) {
-            InventaryWSText(value = "Camera")
-        }
-
-        //Boton galeria
-        Button(onClick = onGalleryClicked, Modifier.fillMaxWidth()) {
-            InventaryWSText(value = "Galeria")
-        }
-
         //Boton para guardar
-        Button(onClick = onSaveCliked, Modifier.fillMaxWidth()) {
-            InventaryWSText(value = "Guardar")
-        }
+        IWSButtom(
+            value = "Guardar",
+            onClick = onCameraClicked,
+            containerColor = Color(0xFF3BA558),
+            contentColor = Color.White,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
+}
+
+@Composable
+fun ImageContentSelector(
+    onCameraClicked: () -> Unit,
+    onGalleryClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        //Boton camara
+        IWSButtomWithIcon(
+            value = "Camara",
+            imageVector = Icons.Default.Camera,
+            onClick = onCameraClicked,
+            containerColor = Color.White,
+            contentColor = Color.Blue,
+            border = BorderStroke(width = 1.dp, color = Color.Gray.copy(alpha = 0.5f)),
+            modifier = modifier.weight(1f),
+        )
+
+        //Boton gallery
+        IWSButtomWithIcon(
+            value = "Galleria",
+            imageVector = Icons.Default.Image,
+            onClick = onGalleryClicked,
+            containerColor = Color.White,
+            contentColor = Color.Blue,
+            border = BorderStroke(width = 1.dp, color = Color.Gray.copy(alpha = 0.5f)),
+            modifier = modifier.weight(1f)
+        )
+    }
+
+}
+
+@Composable
+fun StockConten(
+    stock: String,
+    onStockChanged: (String) -> Unit,
+    minimumStock: String,
+    onMinimumStockChanged: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        //existencia
+        InventaryStockOutlinedTextField(
+            value = stock,
+            onValueChange = onStockChanged,
+            label = "Stock",
+            placeholder = "0",
+            modifier = modifier.weight(1f) //weight(1f)
+        )
+
+        //existencia minima
+        InventaryStockOutlinedTextField(
+            value = minimumStock,
+            onValueChange = onMinimumStockChanged,
+            label = "Stock minimo",
+            placeholder = "0",
+            modifier = modifier.weight(1f)
+        )
+    }
+
 }

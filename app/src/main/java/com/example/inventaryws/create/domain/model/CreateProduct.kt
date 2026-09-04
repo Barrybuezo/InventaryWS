@@ -1,5 +1,7 @@
 package com.example.inventaryws.create.domain.model
 
+import android.net.Uri
+
 data class CreateProduct(
     val name: String,
     val category: String,
@@ -7,5 +9,5 @@ data class CreateProduct(
     val amount: String,
     val stock: Int,
     val minimumStock: Int,
-    val urlImg: String
+    val imageUri: Uri
 )

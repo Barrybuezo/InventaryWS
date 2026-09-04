@@ -1,4 +1,4 @@
-package com.example.inventaryws.ui
+package com.example.inventaryws.ui.create
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -68,7 +68,7 @@ class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) 
             amount = _uiState.value.amount,
             stock = _uiState.value.stock.toInt(),
             minimumStock = _uiState.value.minimumStock.toInt(),
-            urlImg = ""
+            imageUri = _uiState.value.localUri
         )
 
         viewModelScope.launch {
