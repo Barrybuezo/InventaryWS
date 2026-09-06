@@ -1,4 +1,4 @@
-package com.example.inventaryws.ui.composables
+package com.example.inventaryws.create.ui.composables
 
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -17,6 +17,7 @@ fun InventaryStockOutlinedTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
+    leadingIcon: @Composable (() -> Unit)? = null,
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -32,6 +33,7 @@ fun InventaryStockOutlinedTextField(
             InventaryWSText(value = placeholder)
         },
         maxLines = maxLines,
-        minLines = minLines
+        minLines = minLines,
+        leadingIcon = leadingIcon
     )
 }

@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.inventaryws.core.ui.theme.InventaryWSTheme
-import com.example.inventaryws.ui.create.CreateScreen
+import com.example.inventaryws.home.ui.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             InventaryWSTheme {
-                CreateScreen()
+                HomeScreen()
             }
         }
     }

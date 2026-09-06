@@ -1,4 +1,4 @@
-package com.example.inventaryws.ui.create
+package com.example.inventaryws.create.ui.create
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -70,8 +70,8 @@ class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) 
         val form = _uiState.value
         val newProduct = CreateProduct(
             name = form.name,
-            category = form.category.label,
             description = form.description,
+            category = form.category.label,
             amount = form.amount,
             stock = form.stock.toInt(),
             minimumStock = form.minimumStock.toInt(),

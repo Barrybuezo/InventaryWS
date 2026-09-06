@@ -1,4 +1,4 @@
-package com.example.inventaryws.ui.create
+package com.example.inventaryws.create.ui.create
 
 import android.net.Uri
 import android.util.Log
@@ -48,8 +48,8 @@ import com.example.inventaryws.core.composables.InventaryWSText
 import com.example.inventaryws.core.domain.model.CreateProductCategory
 import com.example.inventaryws.core.util.image
 import com.example.inventaryws.create.data.utils.createImageCaptureUri
-import com.example.inventaryws.ui.composables.InventaryStockOutlinedTextField
-import com.example.inventaryws.ui.composables.InventaryWSTopAppBar
+import com.example.inventaryws.create.ui.composables.InventaryStockOutlinedTextField
+import com.example.inventaryws.create.ui.composables.InventaryWSTopAppBar
 import org.koin.compose.viewmodel.koinViewModel
 
 @Preview(showBackground = true)
@@ -306,18 +306,18 @@ fun StockConten(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class) //permiso
 @Composable
 fun CategoryDropDown(
     selectedCategory: CreateProductCategory,
-    onCategorySelected: (CreateProductCategory) -> Unit,
+    onCategorySelected: (CreateProductCategory) -> Unit, //avisar cuando cambie opcion
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) } //controla si la lista de opciones está abierta o cerrada
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
+        onExpandedChange = { expanded = !expanded }, //cada vez que el usuario toque el cuadro se invierte su estado
         modifier = modifier
     ) {
         InventaryStockOutlinedTextField(
@@ -325,7 +325,7 @@ fun CategoryDropDown(
             onValueChange = {},
             readOnly = true,
             label = "Categoría",
-            placeholder = "Selecciona una categoría",
+            placeholder = "",
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .menuAnchor()
@@ -334,14 +334,14 @@ fun CategoryDropDown(
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false } //si el usuario toca en otra parte que no sea el menú, lo cierra
         ) {
             CreateProductCategory.entries.forEach { category ->
                 DropdownMenuItem(
                     text = { InventaryWSText(value = category.label) },
                     onClick = {
-                        onCategorySelected(category)
                         expanded = false
+                        onCategorySelected(category)
                     }
                 )
             }
@@ -386,7 +386,7 @@ fun ProductImageSection(
                     imageVector = image,
                     contentDescription = null,
                     tint = Color.Gray,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(140.dp)
                 )
             }
         } else {

@@ -1,4 +1,4 @@
-package com.example.inventaryws.ui.composables
+package com.example.inventaryws.create.ui.composables
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
