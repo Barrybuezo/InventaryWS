@@ -11,27 +11,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.inventaryws.core.domain.model.CreateProductCategory
 
-@OptIn(ExperimentalMaterial3Api::class) //permiso
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryDropDown(
-    selectedCategory: CreateProductCategory,
-    onCategorySelected: (CreateProductCategory) -> Unit, //avisar cuando cambie opcion
+fun <T> IWSDropDown(
+    options: List<T>,
+    selected: T,
+    label: (T) -> String, // cómo convertir cada opción en el texto que se muestra
+    onSelected: (T) -> Unit,
+    fieldLabel: String = "Categoría",
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) } //controla si la lista de opciones está abierta o cerrada
+    var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded }, //cada vez que el usuario toque el cuadro se invierte su estado
+        onExpandedChange = { expanded = !expanded },
         modifier = modifier
     ) {
         InventaryStockOutlinedTextField(
-            value = selectedCategory.label,
+            value = label(selected),
             onValueChange = {},
             readOnly = true,
-            label = "Categoría",
+            label = fieldLabel,
             placeholder = "",
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
@@ -41,14 +43,14 @@ fun CategoryDropDown(
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false } //si el usuario toca en otra parte que no sea el menú, lo cierra
+            onDismissRequest = { expanded = false }
         ) {
-            CreateProductCategory.entries.forEach { category ->
+            options.forEach { option ->
                 DropdownMenuItem(
-                    text = { InventaryWSText(value = category.label) },
+                    text = { InventaryWSText(value = label(option)) },
                     onClick = {
                         expanded = false
-                        onCategorySelected(category)
+                        onSelected(option)
                     }
                 )
             }

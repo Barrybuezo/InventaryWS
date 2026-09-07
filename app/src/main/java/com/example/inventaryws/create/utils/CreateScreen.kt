@@ -19,10 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,11 +38,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.example.inventaryws.core.composables.CategoryDropDown
+import com.example.inventaryws.core.composables.IWSDropDown
+import com.example.inventaryws.core.domain.model.CreateProductCategory
 import com.example.inventaryws.core.composables.IWSButtom
 import com.example.inventaryws.core.composables.IWSButtomWithIcon
 import com.example.inventaryws.core.composables.InventaryWSText
-import com.example.inventaryws.core.domain.model.CreateProductCategory
 import com.example.inventaryws.core.util.image
 import com.example.inventaryws.create.data.utils.createImageCaptureUri
 import com.example.inventaryws.core.composables.InventaryStockOutlinedTextField
@@ -198,9 +194,12 @@ fun CreateScreenContent(
             modifier = modifier.fillMaxWidth()
         )
 
-        CategoryDropDown(
-            selectedCategory = category,
-            onCategorySelected = onCategoryChanged,
+        IWSDropDown(
+            options = CreateProductCategory.entries,
+            selected = category,
+            label = { it.label },
+            onSelected = onCategoryChanged,
+            fieldLabel = "Categoría",
             modifier = modifier.fillMaxWidth()
         )
 
