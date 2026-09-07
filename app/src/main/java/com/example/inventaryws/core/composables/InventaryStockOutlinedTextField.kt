@@ -1,9 +1,8 @@
-package com.example.inventaryws.create.ui.composables
+package com.example.inventaryws.core.composables
 
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.inventaryws.core.composables.InventaryWSText
 
 @Composable
 fun InventaryStockOutlinedTextField(

@@ -1,7 +1,5 @@
 package com.example.inventaryws.home.ui
 
-import android.R.attr.data
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,14 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.inventaryws.R
-import com.example.inventaryws.core.composables.IWSAsyncImage
+import com.example.inventaryws.core.composables.CategoryDropDown
 import com.example.inventaryws.core.composables.InventaryWSText
-import com.example.inventaryws.create.ui.composables.InventaryStockOutlinedTextField
+import com.example.inventaryws.core.composables.InventaryStockOutlinedTextField
 import com.example.inventaryws.home.ui.composables.IWSProductItem
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,13 +38,6 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Scaffold { innerPadding ->
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(innerPadding)
-//        ) {
-//            InventaryWSText(value = "Home")
-//        }
 
         Box(
             modifier = Modifier
@@ -100,6 +90,7 @@ fun SearchContent(modifier: Modifier.Companion) {
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         InventaryStockOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = "",
             label = "",
             placeholder = "Buscar producto...",
@@ -107,6 +98,12 @@ fun SearchContent(modifier: Modifier.Companion) {
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Search, contentDescription = null)
             }
+        )
+
+        CategoryDropDown(
+            selectedCategory = category,
+            onCategorySelected = onCategoryChanged,
+            modifier = modifier.fillMaxWidth()
         )
     }
 }

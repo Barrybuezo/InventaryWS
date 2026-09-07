@@ -1,4 +1,4 @@
-package com.example.inventaryws.create.ui.create
+package com.example.inventaryws.create.utils
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel

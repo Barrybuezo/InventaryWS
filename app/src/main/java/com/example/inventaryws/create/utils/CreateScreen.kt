@@ -1,4 +1,4 @@
-package com.example.inventaryws.create.ui.create
+package com.example.inventaryws.create.utils
 
 import android.net.Uri
 import android.util.Log
@@ -42,13 +42,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.example.inventaryws.core.composables.CategoryDropDown
 import com.example.inventaryws.core.composables.IWSButtom
 import com.example.inventaryws.core.composables.IWSButtomWithIcon
 import com.example.inventaryws.core.composables.InventaryWSText
 import com.example.inventaryws.core.domain.model.CreateProductCategory
 import com.example.inventaryws.core.util.image
 import com.example.inventaryws.create.data.utils.createImageCaptureUri
-import com.example.inventaryws.create.ui.composables.InventaryStockOutlinedTextField
+import com.example.inventaryws.core.composables.InventaryStockOutlinedTextField
 import com.example.inventaryws.create.ui.composables.InventaryWSTopAppBar
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -306,48 +307,7 @@ fun StockConten(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class) //permiso
-@Composable
-fun CategoryDropDown(
-    selectedCategory: CreateProductCategory,
-    onCategorySelected: (CreateProductCategory) -> Unit, //avisar cuando cambie opcion
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) } //controla si la lista de opciones está abierta o cerrada
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }, //cada vez que el usuario toque el cuadro se invierte su estado
-        modifier = modifier
-    ) {
-        InventaryStockOutlinedTextField(
-            value = selectedCategory.label,
-            onValueChange = {},
-            readOnly = true,
-            label = "Categoría",
-            placeholder = "",
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false } //si el usuario toca en otra parte que no sea el menú, lo cierra
-        ) {
-            CreateProductCategory.entries.forEach { category ->
-                DropdownMenuItem(
-                    text = { InventaryWSText(value = category.label) },
-                    onClick = {
-                        expanded = false
-                        onCategorySelected(category)
-                    }
-                )
-            }
-        }
-    }
-}
 
 
 @Composable

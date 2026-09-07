@@ -3,7 +3,7 @@ package com.example.inventaryws.create.di
 import com.example.inventaryws.create.data.repository.CreateRepositoryImpl
 import com.example.inventaryws.create.domain.repository.CreateRepository
 import com.example.inventaryws.create.domain.usecase.CreateDocumentUseCase
-import com.example.inventaryws.create.ui.create.CreateViewModel
+import com.example.inventaryws.create.utils.CreateViewModel
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
