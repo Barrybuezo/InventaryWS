@@ -14,4 +14,8 @@ class DetailRepositoryImpl(private val firebase: FireBaseRemoteDataSource) : Det
             .map { dto -> Result.success(dto.toDomain()) }
             .catch { e -> emit(Result.failure(e)) }
     }
+
+    override suspend fun deleteProduct(productId: String): Result<Unit> = runCatching {
+        firebase.delete(productId)
+    }
 }

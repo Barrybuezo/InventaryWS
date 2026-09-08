@@ -15,11 +15,17 @@ import kotlinx.coroutines.launch
 data class CreateUiState(
     val isLoading: Boolean = false,
     val name: String = "",
-    val description : String = "",
+    val nameError: String? = null,
+    val description: String = "",
+    val descriptionError: String? = null,
     val category: CreateProductCategory = CreateProductCategory.DEFAULT,
-    val amount : String = "",
-    val stock : String = "",
+    val categoryError: String? = null,
+    val amount: String = "",
+    val amountError: String? = null,
+    val stock: String = "",
+    val stockError: String? = null,
     val minimumStock: String = "",
+    val minimumStockError: String? = null,
     val localUri: Uri = Uri.EMPTY,
     val content: CreateContent = CreateContent.Idle
 )
@@ -30,39 +36,57 @@ sealed interface CreateContent {
     data class Error(val message: String) : CreateContent
 }
 
+//validacion de campo vacio
+private fun requiredFieldError(value: String): String? =
+    if (value.isBlank()) "Campo requerido" else null
+
+//validacion del precio
+private fun positiveAmountError(value: String): String? {
+    requiredFieldError(value)?.let { return it }
+    val parsed = value.toDoubleOrNull() ?: return "Ingresa un número válido"
+    return if (parsed <= 0.0) "Debe ser ayor a 0" else null
+}
+
+//validacion del stock
+private fun nonNegativeIntError(value: String): String?{
+    requiredFieldError(value)?.let { return it }
+    val parsed = value.toIntOrNull() ?: return "Ingresa un número entero válido"
+    return if (parsed < 0) "No puede ser negativo" else null
+}
+
 class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateUiState())
     val uiState: StateFlow<CreateUiState> = _uiState.asStateFlow()
 
-    fun onNameChanged(value: String){
+    fun onNameChanged(value: String) {
         _uiState.update { product -> product.copy(name = value) }
     }
 
-    fun onDescriptionChanged(value: String){
+    fun onDescriptionChanged(value: String) {
         _uiState.update { product -> product.copy(description = value) }
     }
 
-    fun onCategory(value: CreateProductCategory){
+    fun onCategory(value: CreateProductCategory) {
         _uiState.update { it.copy(category = value) }
     }
 
-    fun onAmountChanged(value: String){
+    fun onAmountChanged(value: String) {
         _uiState.update { product -> product.copy(amount = value) }
     }
 
-    fun onStockChanged(value: String){
+    fun onStockChanged(value: String) {
         _uiState.update { product -> product.copy(stock = value) }
     }
 
-    fun onMinimumStockChanged(value: String){
+    fun onMinimumStockChanged(value: String) {
         _uiState.update { product -> product.copy(minimumStock = value) }
     }
 
-    fun onImageSelected(uri : Uri){
+    fun onImageSelected(uri: Uri) {
         _uiState.update { it.copy(localUri = uri) }
     }
 
-    fun saveProduct(){
+    fun saveProduct() {
         _uiState.update { product -> product.copy(isLoading = true) } //para que servia copy
 
         //validaciones
@@ -91,7 +115,9 @@ class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) 
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            content = CreateContent.Error(message = exception.message?:"Unknown error")//pq no confundirme?
+                            content = CreateContent.Error(
+                                message = exception.message ?: "Unknown error"
+                            )//pq no confundirme?
                         )
                     }
                 }

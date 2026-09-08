@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -35,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.example.inventaryws.core.composables.IWSAsyncImage
 import com.example.inventaryws.core.composables.IWSButtom
 import com.example.inventaryws.core.composables.IWSButtomWithIcon
 import com.example.inventaryws.core.composables.IWSDropDown
@@ -166,6 +168,15 @@ fun EditScreenContent(
             modifier = modifier.fillMaxWidth()
         )
 
+        IWSDropDown(
+            options = CreateProductCategory.entries,
+            selected = category,
+            label = { it.label },
+            onSelected = onCategoryChanged,
+            fieldLabel = "Categoría",
+            modifier = modifier.fillMaxWidth()
+        )
+
         //description
         InventaryStockOutlinedTextField(
             value = description,
@@ -175,15 +186,6 @@ fun EditScreenContent(
             singleLine = false,
             minLines = 2,
             maxLines = 2,
-            modifier = modifier.fillMaxWidth()
-        )
-
-        IWSDropDown(
-            options = CreateProductCategory.entries,
-            selected = category,
-            label = { it.label },
-            onSelected = onCategoryChanged,
-            fieldLabel = "Categoría",
             modifier = modifier.fillMaxWidth()
         )
 
@@ -206,6 +208,7 @@ fun EditScreenContent(
 
         ProductImageSection(
             imageUri = imageUri,
+            remoteImage = remoteImage,
             onCameraClicked = onCameraClicked,
             onGalleryClicked = onGalleryClicked,
             modifier = Modifier.weight(1f)
@@ -215,7 +218,7 @@ fun EditScreenContent(
         IWSButtom(
             value = "Guardar cambios",
             onClick = onEditCliked,
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = Color(0xFFF59E0B),
             contentColor = Color.White,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -228,9 +231,9 @@ fun ImageContentSelector(
     onGalleryClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Column(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         //Boton camara
         IWSButtomWithIcon(
@@ -240,7 +243,7 @@ fun ImageContentSelector(
             containerColor = Color.White,
             contentColor = Color.Blue,
             border = BorderStroke(width = 1.dp, color = Color.Gray.copy(alpha = 0.5f)),
-            modifier = modifier.weight(1f),
+            modifier = Modifier.fillMaxWidth()
         )
 
         //Boton gallery
@@ -251,7 +254,7 @@ fun ImageContentSelector(
             containerColor = Color.White,
             contentColor = Color.Blue,
             border = BorderStroke(width = 1.dp, color = Color.Gray.copy(alpha = 0.5f)),
-            modifier = modifier.weight(1f)
+            modifier = Modifier.fillMaxWidth()
         )
     }
 
@@ -275,7 +278,7 @@ fun StockConten(
             onValueChange = onStockChanged,
             label = "Stock",
             placeholder = "0",
-            modifier = modifier.weight(1f) //weight(1f)
+            modifier = Modifier.weight(1f) //weight(1f)
         )
 
         //existencia minima
@@ -284,7 +287,7 @@ fun StockConten(
             onValueChange = onMinimumStockChanged,
             label = "Stock minimo",
             placeholder = "0",
-            modifier = modifier.weight(1f)
+            modifier = Modifier.weight(1f)
         )
     }
 
@@ -294,10 +297,14 @@ fun StockConten(
 @Composable
 fun ProductImageSection(
     imageUri: Uri?,
+    remoteImage: String,
     onCameraClicked: () -> Unit,
     onGalleryClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -307,39 +314,62 @@ fun ProductImageSection(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Botones de cámara y galería
-        ImageContentSelector(
-            onCameraClicked = onCameraClicked,
-            onGalleryClicked = onGalleryClicked,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            when {
+                imageUri != Uri.EMPTY -> {
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = "Foto del producto",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.medium)
+                    )
+                }
 
-        if (imageUri == Uri.EMPTY) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(Color.Gray.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = image,
-                    contentDescription = null,
-                    tint = Color.Gray,
-                    modifier = Modifier.size(140.dp)
-                )
+                remoteImage.isNotBlank() -> {
+                    IWSAsyncImage(
+                        data = remoteImage,
+                        contentDescription = "Foto del producto",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.medium)
+                    )
+                }
+
+                else -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.medium)
+                            .background(Color.Gray.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Icon(
+                            imageVector = image,
+                            contentDescription = null,
+                            tint = Color.Gray,
+                            modifier = Modifier.size(140.dp)
+                        )
+                    }
+                }
             }
-        } else {
-            AsyncImage(
-                model = imageUri,
-                contentDescription = "Foto del producto",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .clip(MaterialTheme.shapes.medium)
+
+            // Botones de cámara y galería
+            ImageContentSelector(
+                onCameraClicked = onCameraClicked,
+                onGalleryClicked = onGalleryClicked,
+                modifier = Modifier.weight(1f)
             )
+
         }
     }
 }

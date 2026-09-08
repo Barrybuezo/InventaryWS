@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface DetailRepository {
     fun observeProductById(productId: String) : Flow<Result<Product>>
+    suspend fun deleteProduct(productId: String) : Result<Unit>
 }

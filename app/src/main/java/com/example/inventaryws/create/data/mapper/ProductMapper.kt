@@ -5,6 +5,7 @@ import com.example.inventaryws.create.domain.model.CreateProduct
 
 fun CreateProduct.toDto() = ProductDto(
     name = name,
+    description = description,
     category = category,
     amount = amount.toDouble(),
     stock = stock,

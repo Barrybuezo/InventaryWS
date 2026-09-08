@@ -183,6 +183,15 @@ fun CreateScreenContent(
             modifier = modifier.fillMaxWidth()
         )
 
+        IWSDropDown(
+            options = CreateProductCategory.entries,
+            selected = category,
+            label = { it.label },
+            onSelected = onCategoryChanged,
+            fieldLabel = "Categoría",
+            modifier = modifier.fillMaxWidth()
+        )
+
         //description
         InventaryStockOutlinedTextField(
             value = description,
@@ -192,15 +201,6 @@ fun CreateScreenContent(
             singleLine = false,
             minLines = 2,
             maxLines = 2,
-            modifier = modifier.fillMaxWidth()
-        )
-
-        IWSDropDown(
-            options = CreateProductCategory.entries,
-            selected = category,
-            label = { it.label },
-            onSelected = onCategoryChanged,
-            fieldLabel = "Categoría",
             modifier = modifier.fillMaxWidth()
         )
 

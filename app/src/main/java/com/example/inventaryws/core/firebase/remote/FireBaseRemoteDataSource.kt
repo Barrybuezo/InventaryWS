@@ -106,4 +106,12 @@ class FireBaseRemoteDataSource(
             .update(update)
             .await()
     }
+
+    suspend fun delete(documentId: String) {
+        firestore
+            .collection("Productos")
+            .document(documentId)
+            .delete()
+            .await()
+    }
 }
