@@ -6,7 +6,7 @@ import java.util.Date
 
 data class ProductDto(
     @DocumentId
-    val documentId : String? = "",
+    val documentId : String = "",
     val name: String? = "",
     val description: String? = "",
     val category: String? = "",

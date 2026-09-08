@@ -2,7 +2,7 @@ package com.example.inventaryws.home.data.repository
 
 import com.example.inventaryws.core.firebase.remote.FireBaseRemoteDataSource
 import com.example.inventaryws.home.data.mapper.toDomain
-import com.example.inventaryws.home.domain.model.Product
+import com.example.inventaryws.core.domain.model.Product
 import com.example.inventaryws.home.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

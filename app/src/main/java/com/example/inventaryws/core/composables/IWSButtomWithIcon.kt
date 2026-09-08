@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun IWSButtomWithIcon(
     value: String,
-    imageVector: ImageVector,
+    imageVector: ImageVector? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     border: BorderStroke? = null,
@@ -38,8 +38,10 @@ fun IWSButtomWithIcon(
         contentPadding = PaddingValues(15.dp),
         onClick = onClick,
     ) {
-        Icon(imageVector = imageVector, contentDescription = "Trail icon")
-        Spacer(modifier = Modifier.width(10.dp))
+        if (imageVector != null) {
+            Icon(imageVector = imageVector, contentDescription = "Trail icon")
+            Spacer(modifier = Modifier.width(10.dp))
+        }
         InventaryWSText(value = value, fontSize = 20.sp)
     }
 }

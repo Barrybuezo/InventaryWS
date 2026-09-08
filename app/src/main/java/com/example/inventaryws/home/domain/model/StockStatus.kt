@@ -1,5 +1,7 @@
 package com.example.inventaryws.home.domain.model
 
+import com.example.inventaryws.core.domain.model.Product
+
 enum class StockStatus {
     NORMAL,   // verde
     WARNING,  // amarillo - cerca de quedarse bajo

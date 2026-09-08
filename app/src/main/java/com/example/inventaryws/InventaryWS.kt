@@ -4,6 +4,8 @@ import android.app.Application
 import com.example.inventaryws.core.firebase.di.firebaseModule
 import com.example.inventaryws.core.supabase.di.supabaseModule
 import com.example.inventaryws.create.di.createModule
+import com.example.inventaryws.detail.di.detailModule
+import com.example.inventaryws.edit.di.editModule
 import com.example.inventaryws.home.di.homeModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -21,7 +23,9 @@ class InventaryWS : Application(), KoinComponent {
                 firebaseModule,
                 createModule,
                 homeModule,
-                supabaseModule
+                supabaseModule,
+                detailModule,
+                editModule
             )
         }
     }

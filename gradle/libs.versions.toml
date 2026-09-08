@@ -11,6 +11,7 @@ composeBom = "2026.02.01"
 koinBom = "4.2.2"
 coilCompose = "3.3.0"
 ktor = "3.4.1"
+navigation3 = "1.1.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,10 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 #ktor
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+
+#nav3
+androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "navigation3" }
+androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

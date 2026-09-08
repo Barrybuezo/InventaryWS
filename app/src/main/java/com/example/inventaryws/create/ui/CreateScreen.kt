@@ -1,4 +1,4 @@
-package com.example.inventaryws.create.utils
+package com.example.inventaryws.create.ui
 
 import android.net.Uri
 import android.util.Log
@@ -46,7 +46,7 @@ import com.example.inventaryws.core.composables.InventaryWSText
 import com.example.inventaryws.core.util.image
 import com.example.inventaryws.create.data.utils.createImageCaptureUri
 import com.example.inventaryws.core.composables.InventaryStockOutlinedTextField
-import com.example.inventaryws.create.ui.composables.InventaryWSTopAppBar
+import com.example.inventaryws.core.composables.InventaryWSTopAppBar
 import org.koin.compose.viewmodel.koinViewModel
 
 @Preview(showBackground = true)
@@ -103,6 +103,7 @@ fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
         ) {
             CreateScreenContent(

@@ -20,16 +20,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.example.inventaryws.core.composables.IWSAsyncImage
 import com.example.inventaryws.core.composables.InventaryWSText
-import com.example.inventaryws.home.domain.model.Product
+import com.example.inventaryws.core.domain.model.Product
 import com.example.inventaryws.home.domain.model.StockStatus
 import com.example.inventaryws.home.domain.model.stockStatus
 
 @Composable
 fun IWSProductItem(
     product: Product,
+    onClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier) {
+    Card(
+        onClick = { onClick(product.documentId) },
+        modifier = modifier
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

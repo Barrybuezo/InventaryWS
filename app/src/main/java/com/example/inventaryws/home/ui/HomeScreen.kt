@@ -38,13 +38,15 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel()
+    onProductClick: (String) -> Unit,
+    onAddClick: () -> Unit,
+    viewModel: HomeViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = onAddClick) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar")
             }
         }
@@ -92,7 +94,8 @@ fun HomeScreen(
                 ) { product ->
                     IWSProductItem(
                         modifier = Modifier.fillMaxWidth(),
-                        product = product
+                        product = product,
+                        onClick = { onProductClick(product.documentId)}
                     )
                 }
             }

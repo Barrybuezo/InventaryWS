@@ -1,7 +1,7 @@
 package com.example.inventaryws.home.data.mapper
 
 import com.example.inventaryws.core.firebase.dto.ProductDto
-import com.example.inventaryws.home.domain.model.Product
+import com.example.inventaryws.core.domain.model.Product
 
 fun ProductDto.toDomain() = Product(
     documentId = documentId ?: "Empty Data",

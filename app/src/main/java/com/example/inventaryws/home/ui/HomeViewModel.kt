@@ -3,7 +3,7 @@ package com.example.inventaryws.home.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.inventaryws.home.domain.model.Product
+import com.example.inventaryws.core.domain.model.Product
 import com.example.inventaryws.home.domain.model.StockStatus
 import com.example.inventaryws.home.domain.model.stockStatus
 import com.example.inventaryws.home.domain.usecase.ObserveProductsUseCase

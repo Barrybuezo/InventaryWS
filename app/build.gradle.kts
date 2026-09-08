@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
     alias(libs.plugins.kotlin.serialization)
-
 }
 
 android {
@@ -74,6 +73,10 @@ dependencies {
     //ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
+
+    //navigation
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
 
     //testing
     testImplementation(libs.junit)

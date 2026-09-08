@@ -1,8 +1,9 @@
-package com.example.inventaryws.home.domain.model
+package com.example.inventaryws.edit.domain.model
 
 data class Product(
     val documentId: String,
     val name: String,
+    val description: String,
     val category: String,
     val amount: Double,
     val stock: Int,

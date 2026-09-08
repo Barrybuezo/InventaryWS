@@ -16,4 +16,9 @@ class SupabaseRemoteDataSource(supabaseClient: SupabaseClient) {
 
         return bucket.publicUrl(path = path)
     }
+
+    suspend fun deleteImage(url : String){
+        val path = url.substringAfter("products/")
+        bucket.delete(path)
+    }
 }
