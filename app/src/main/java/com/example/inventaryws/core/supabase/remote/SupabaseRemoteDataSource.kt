@@ -6,7 +6,7 @@ import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
 
 class SupabaseRemoteDataSource(supabaseClient: SupabaseClient) {
-    private val bucket = supabaseClient.storage.from(bucketId = "productos") //que es data sensible?
+    private val bucket = supabaseClient.storage.from(bucketId = "productos")
 
     //subir imagenes
     suspend fun uploadImagen(uri: Uri) : String{
@@ -18,7 +18,7 @@ class SupabaseRemoteDataSource(supabaseClient: SupabaseClient) {
     }
 
     suspend fun deleteImage(url : String){
-        val path = url.substringAfter("products/")
+        val path = url.substringAfter("productos/")
         bucket.delete(path)
     }
 }

@@ -64,9 +64,11 @@ class DetailViewModel(
     }
 
     fun deleteProduct(){
+        val currentProduct = (uiState.value.detail as? DetailEvent.Detail)?.productDetail ?: return
+
         _uiState.update { it.copy(isDeleting = true) }
         viewModelScope.launch {
-            deleteProductUseCase(productId).fold(
+            deleteProductUseCase(currentProduct.documentId, currentProduct.imgUrl).fold(
                 onSuccess = {
                     _uiState.update { it.copy(isDeleting = false, detail = DetailEvent.Deleted) }
                 },

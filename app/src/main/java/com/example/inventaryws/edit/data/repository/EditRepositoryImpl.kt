@@ -1,5 +1,6 @@
 package com.example.inventaryws.edit.data.repository
 
+import android.net.Uri
 import android.util.Log
 import com.example.inventaryws.core.firebase.remote.FireBaseRemoteDataSource
 import com.example.inventaryws.core.supabase.remote.SupabaseRemoteDataSource
@@ -23,7 +24,7 @@ class EditRepositoryImpl(
 
     override suspend fun upDateProduct(product: EditProduct): Result<Unit> {
         return runCatching {
-            val imageUrl = if (product.localImage != null) {
+            val imageUrl = if (product.localImage != null && product.localImage != Uri.EMPTY) {
                 val pathSupabase = product.remoteImage
 
                 Log.d("EditRepositoryImpl", "updateProduct: $pathSupabase")
@@ -31,8 +32,7 @@ class EditRepositoryImpl(
                 supabase.deleteImage(pathSupabase)
 
                 //subir nuevo uri
-                val newUrl = supabase.uploadImagen(product.localImage)
-                newUrl
+                supabase.uploadImagen(product.localImage)
             } else {
                 product.remoteImage
             }

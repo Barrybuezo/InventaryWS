@@ -112,7 +112,7 @@ class EditViewModel(
     }
 
     fun saveChanges() = viewModelScope.launch {
-        _uiState.update { product -> product.copy(isLoading = true) } //para que servia copy
+        _uiState.update { product -> product.copy(isLoading = true) }
 
         //validaciones
 

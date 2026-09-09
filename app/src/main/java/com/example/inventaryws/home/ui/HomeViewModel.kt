@@ -36,6 +36,7 @@ data class HomeUiState(
     val lowStockCount: Int get() = allProducts.count { it.stockStatus() == StockStatus.LOW }
 }
 
+
 class HomeViewModel(private val observeProductsUseCase: ObserveProductsUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
