@@ -36,9 +36,7 @@ fun AppNavHost(
             }
 
             entry<NavRoutes.Create> {
-                CreateScreen(
-//                    onNavigateBack = { backStack.back() }
-                )
+                CreateScreen()
             }
 
             entry<NavRoutes.Detail> { key ->

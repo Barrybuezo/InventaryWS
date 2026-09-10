@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Image
@@ -31,9 +32,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,16 +56,15 @@ import com.example.inventaryws.core.util.image
 import com.example.inventaryws.create.data.utils.createImageCaptureUri
 import com.example.inventaryws.core.composables.InventaryStockOutlinedTextField
 import com.example.inventaryws.core.composables.InventaryWSTopAppBar
+import com.example.inventaryws.core.util.formImeAction
+import com.example.inventaryws.core.util.formKeyboardActions
+import com.example.inventaryws.core.util.rememberFocusRequesters
 import org.koin.compose.viewmodel.koinViewModel
 
-@Preview(showBackground = true)
 @Composable
-fun CreateScreenPreview() {
-    CreateScreen()
-}
-
-@Composable
-fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
+fun CreateScreen(
+    viewModel: CreateViewModel = koinViewModel()
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
@@ -81,7 +89,6 @@ fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
     LaunchedEffect(uiState.content) {
         when (val content = uiState.content) {
             is CreateContent.Success -> {
-
                 Log.d("InventaryWSLog", "CreateScreen: Success Executed")
             }
 
@@ -96,7 +103,7 @@ fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
 
     Scaffold(
         topBar = {
-            InventaryWSTopAppBar(title = "Crear", onBackPressed = {})
+            InventaryWSTopAppBar(title = "Crear", onBackPressed = { })
         }
     ) { innerPadding ->
 
@@ -109,16 +116,22 @@ fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
             CreateScreenContent(
                 name = uiState.name,
                 onNameChanged = viewModel::onNameChanged,
+                nameError = uiState.nameError,
                 description = uiState.description,
                 onDescriptionChanged = viewModel::onDescriptionChanged,
+                descriptionError = uiState.descriptionError,
                 category = uiState.category,
                 onCategoryChanged = viewModel::onCategory,
+                categoryError = uiState.categoryError,
                 amount = uiState.amount,
                 onAmountChanged = viewModel::onAmountChanged,
+                amountError = uiState.amountError,
                 stock = uiState.stock,
                 onStockChanged = viewModel::onStockChanged,
+                stockError = uiState.stockError,
                 minimumStock = uiState.minimumStock,
                 onMinimumStockChanged = viewModel::onMinimumStockChanged,
+                minimumStockError = uiState.minimumStockError,
                 imageUri = uiState.localUri,
                 onSaveCliked = viewModel::saveProduct,
                 onCameraClicked = {
@@ -151,23 +164,31 @@ fun CreateScreen(viewModel: CreateViewModel = koinViewModel()) {
 fun CreateScreenContent(
     name: String,
     onNameChanged: (String) -> Unit,
+    nameError: String?,
     description: String,
     onDescriptionChanged: (String) -> Unit,
+    descriptionError: String?,
     category: CreateProductCategory,
     onCategoryChanged: (CreateProductCategory) -> Unit,
+    categoryError: String?,
     amount: String,
     onAmountChanged: (String) -> Unit,
+    amountError: String?,
     stock: String,
     onStockChanged: (String) -> Unit,
+    stockError: String?,
     minimumStock: String,
     onMinimumStockChanged: (String) -> Unit,
+    minimumStockError: String?,
     imageUri: Uri,
     onCameraClicked: () -> Unit,
     onGalleryClicked: () -> Unit,
     onSaveCliked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequesters = rememberFocusRequesters(5)
 
     Column(
         modifier = modifier,
@@ -180,7 +201,21 @@ fun CreateScreenContent(
             onValueChange = onNameChanged,
             label = "Nombre",
             placeholder = "Ingresar nombre",
-            modifier = modifier.fillMaxWidth()
+            isError = nameError != null,
+            supportingText = nameError,
+            modifier = modifier
+                .fillMaxWidth()
+                .focusRestorer(focusRequesters[0]),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = formImeAction(0, focusRequesters.lastIndex)
+            ),
+            keyboardActions = formKeyboardActions(
+                0,
+                focusRequesters,
+                focusManager,
+                keyboardController
+            )
         )
 
         IWSDropDown(
@@ -191,6 +226,14 @@ fun CreateScreenContent(
             fieldLabel = "Categoría",
             modifier = modifier.fillMaxWidth()
         )
+        if (categoryError != null) {
+            InventaryWSText(
+                value = categoryError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 
         //description
         InventaryStockOutlinedTextField(
@@ -201,7 +244,21 @@ fun CreateScreenContent(
             singleLine = false,
             minLines = 2,
             maxLines = 2,
-            modifier = modifier.fillMaxWidth()
+            isError = descriptionError != null,
+            supportingText = descriptionError,
+            modifier = modifier
+                .fillMaxWidth()
+                .focusRestorer(focusRequesters[1]),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = formImeAction(1, focusRequesters.lastIndex)
+            ),
+            keyboardActions = formKeyboardActions(
+                1,
+                focusRequesters,
+                focusManager,
+                keyboardController
+            )
         )
 
         //precio
@@ -210,14 +267,33 @@ fun CreateScreenContent(
             onValueChange = onAmountChanged,
             label = "Precio",
             placeholder = "0.00",
-            modifier = modifier.fillMaxWidth()
+            isError = amountError != null,
+            supportingText = amountError,
+            modifier = modifier
+                .fillMaxWidth()
+                .focusRestorer(focusRequesters[2]),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = formImeAction(2, focusRequesters.lastIndex)
+            ),
+            keyboardActions = formKeyboardActions(
+                2,
+                focusRequesters,
+                focusManager,
+                keyboardController
+            )
         )
 
         StockConten(
             stock = stock,
             onStockChanged = onStockChanged,
+            stockError = stockError,
             minimumStock = minimumStock,
             onMinimumStockChanged = onMinimumStockChanged,
+            minimumStockError = minimumStockError,
+            focusRequesters = focusRequesters,
+            focusManager = focusManager,
+            keyboardController = keyboardController,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -278,8 +354,13 @@ fun ImageContentSelector(
 fun StockConten(
     stock: String,
     onStockChanged: (String) -> Unit,
+    stockError: String?,
     minimumStock: String,
     onMinimumStockChanged: (String) -> Unit,
+    minimumStockError: String?,
+    focusRequesters: List<FocusRequester>,
+    focusManager: FocusManager,
+    keyboardController: SoftwareKeyboardController?,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -292,7 +373,21 @@ fun StockConten(
             onValueChange = onStockChanged,
             label = "Stock",
             placeholder = "0",
-            modifier = modifier.weight(1f) //weight(1f)
+            isError = stockError != null,
+            supportingText = stockError,
+            modifier = modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[3]),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = formImeAction(3, focusRequesters.lastIndex)
+            ),
+            keyboardActions = formKeyboardActions(
+                3,
+                focusRequesters,
+                focusManager,
+                keyboardController
+            )
         )
 
         //existencia minima
@@ -301,13 +396,25 @@ fun StockConten(
             onValueChange = onMinimumStockChanged,
             label = "Stock minimo",
             placeholder = "0",
-            modifier = modifier.weight(1f)
+            isError = minimumStockError != null,
+            supportingText = minimumStockError,
+            modifier = modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[4]),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = formImeAction(4, focusRequesters.lastIndex)
+            ),
+            keyboardActions = formKeyboardActions(
+                4,
+                focusRequesters,
+                focusManager,
+                keyboardController
+            )
         )
     }
 
 }
-
-
 
 
 @Composable

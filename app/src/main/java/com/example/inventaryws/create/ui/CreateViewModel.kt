@@ -44,11 +44,11 @@ private fun requiredFieldError(value: String): String? =
 private fun positiveAmountError(value: String): String? {
     requiredFieldError(value)?.let { return it }
     val parsed = value.toDoubleOrNull() ?: return "Ingresa un número válido"
-    return if (parsed <= 0.0) "Debe ser ayor a 0" else null
+    return if (parsed <= 0.0) "Debe ser mayor a 0" else null
 }
 
 //validacion del stock
-private fun nonNegativeIntError(value: String): String?{
+private fun nonNegativeIntError(value: String): String? {
     requiredFieldError(value)?.let { return it }
     val parsed = value.toIntOrNull() ?: return "Ingresa un número entero válido"
     return if (parsed < 0) "No puede ser negativo" else null
@@ -59,27 +59,52 @@ class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) 
     val uiState: StateFlow<CreateUiState> = _uiState.asStateFlow()
 
     fun onNameChanged(value: String) {
-        _uiState.update { product -> product.copy(name = value) }
+        _uiState.update { product ->
+            product.copy(
+                name = value,
+                nameError = requiredFieldError(value)
+            )
+        }
     }
 
     fun onDescriptionChanged(value: String) {
-        _uiState.update { product -> product.copy(description = value) }
+        _uiState.update { product ->
+            product.copy(
+                description = value,
+                descriptionError = requiredFieldError(value)
+            )
+        }
     }
 
     fun onCategory(value: CreateProductCategory) {
-        _uiState.update { it.copy(category = value) }
+        _uiState.update { it.copy(category = value, categoryError = null) }
     }
 
     fun onAmountChanged(value: String) {
-        _uiState.update { product -> product.copy(amount = value) }
+        _uiState.update { product ->
+            product.copy(
+                amount = value,
+                amountError = positiveAmountError(value)
+            )
+        }
     }
 
     fun onStockChanged(value: String) {
-        _uiState.update { product -> product.copy(stock = value) }
+        _uiState.update { product ->
+            product.copy(
+                stock = value,
+                stockError = nonNegativeIntError(value)
+            )
+        }
     }
 
     fun onMinimumStockChanged(value: String) {
-        _uiState.update { product -> product.copy(minimumStock = value) }
+        _uiState.update { product ->
+            product.copy(
+                minimumStock = value,
+                minimumStockError = nonNegativeIntError(value)
+            )
+        }
     }
 
     fun onImageSelected(uri: Uri) {
@@ -87,11 +112,35 @@ class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) 
     }
 
     fun saveProduct() {
-        _uiState.update { product -> product.copy(isLoading = true) } //para que servia copy
+        _uiState.update { current ->
+            current.copy(
+                nameError = requiredFieldError(current.name),
+                categoryError = if (current.category == CreateProductCategory.DEFAULT) "Selecciona una categoria" else null,
+                descriptionError = requiredFieldError(current.description),
+                amountError = positiveAmountError(current.amount),
+                stockError = nonNegativeIntError(current.stock),
+                minimumStockError = nonNegativeIntError(current.minimumStock)
+            )
+        }
 
         //validaciones
 
         val formFields = _uiState.value
+
+        val hasErrors = listOf(
+            formFields.nameError,
+            formFields.categoryError,
+            formFields.descriptionError,
+            formFields.amountError,
+            formFields.stockError,
+            formFields.minimumStockError
+        ).any { it != null }
+
+        if(hasErrors) return
+
+        _uiState.update { it.copy(isLoading = true) }
+
+
         val newProduct = CreateProduct(
             name = formFields.name,
             description = formFields.description,
@@ -117,7 +166,7 @@ class CreateViewModel(private val createDocumentUseCase: CreateDocumentUseCase) 
                             isLoading = false,
                             content = CreateContent.Error(
                                 message = exception.message ?: "Unknown error"
-                            )//pq no confundirme?
+                            )
                         )
                     }
                 }
